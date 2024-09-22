@@ -1,102 +1,95 @@
 pipeline {
-    agent any 
+    agent any
 
     stages {
-        stage('Build') {
+        stage("Build") {
             steps {
-                script {
-                    echo 'Building the code using Maven...'
-                    // Command to build the project using Maven
-                    sh 'mvn clean package'
+                echo 'Building project to compile and package using Maven'
+                // sh 'mvn clean package'
+            }
+        }
+
+        stage("Unit and Integration Tests") {
+            steps {
+                echo 'Running JUnit tests to verify code functionality.'
+                // sh 'mvn test'
+                echo 'Executing integration tests to ensure components work together.'
+                // sh 'mvn verify'
+            }
+            post {
+                success {
+                    mail to: "aggarwalsanchit2005@gmail.com",
+                         subject: "Success: JUnit and Integration tests successful.",
+                         body: "JUnit and integration tests have passed successfully. The stage is working."
+                }
+                failure {
+                    mail to: "aggarwalsanchit2005@gmail.com",
+                         subject: "Failure: JUnit and Integration tests failure.",
+                         body: "JUnit and integration tests have failed. The stage is not working. Please review the logs."
                 }
             }
         }
 
-        stage('Unit and Integration Tests') {
+        stage("Code Analysis") {
             steps {
-                script {
-                    echo 'Running unit and integration tests using maven...'
-                   
-                    sh 'mvn test'
-                  
-                    // sh 'newman run collection.json'
+                echo 'Performing code analysis using SonarQube'
+                // sh 'mvn sonar:sonar'
+            }
+        }
+
+        stage("Security Scan") {
+            steps {
+                echo 'Conducting security scan using OWASP ZAP'
+                // sh 'zap-cli quick-scan --self-contained --start-options "-config api.disablekey=true" http://localhost:8080'
+            }
+            post {
+                success {
+                    mail to: "aggarwalsanchit2005@gmail.com",
+                         subject: "Success: Security scan successful.",
+                         body: "The security scan has completed successfully. The scan is secure."
+                }
+                failure {
+                    mail to: "aggarwalsanchit2005@gmail.com",
+                         subject: "Failure: Security scan failed.",
+                         body: "The security scan has failed. The scan is not secure. Please review and take necessary actions."
                 }
             }
         }
 
-        stage('Code Analysis') {
+        stage("Deploy to Staging") {
             steps {
-                script {
-                    echo 'Analyzing code quality...'
-                    // Command to run SonarQube analysis
-                    // sh 'mvn sonar:sonar'
-                }
+                echo 'Deploying to staging server (AWS EC2) at s3://staging-bucket/'
+                // sh 'aws deploy create-deployment --application-name my-app --deployment-group-name staging-group --s3-location bucket=staging-bucket,key=my-app.zip'
             }
         }
 
-        stage('Security Scan') {
+        stage("Integration Tests on Staging") {
             steps {
-                script {
-                    echo 'Performing security scan...'
-                    // Command to run OWASP ZAP scan
-                    // sh 'zap.sh -quickurl http://your-app-url'
-                }
+                echo 'Running integration tests in the staging environment'
+                // sh 'mvn verify -Dtest=IntegrationTest'
             }
         }
 
-        stage('Deploy to Staging') {
+        stage("Deploy to Production") {
             steps {
-                script {
-                    echo 'Deploying to staging...'
-                    // Command to deploy to AWS or use Ansible
-                    // sh 'ansible-playbook deploy-staging.yml'
-                }
+                echo 'Deploying to production server (AWS EC2)'
+                // sh 'aws deploy create-deployment --application-name my-app --deployment-group-name production-group --s3-location bucket=production-bucket,key=my-app.zip'
             }
         }
 
-        stage('Integration Tests on Staging') {
+        stage("Complete") {
             steps {
-                script {
-                    echo 'Running integration tests on staging...'
-                    // Command to run integration tests in staging
-                    // sh 'newman run staging-collection.json'
-                }
-            }
-        }
-
-        stage('Deploy to Production') {
-            steps {
-                script {
-                    echo 'Deploying to production...'
-                    // Command to deploy to production server
-                    // sh 'ansible-playbook deploy-production.yml'
-                }
+                echo 'Deployment process completed'
             }
         }
     }
 
     post {
         success {
-            script {
-                echo 'Pipeline completed successfully!'
-                // Configure email notification
-                emailext (
-                    subject: "SUCCESS: ${currentBuild.fullDisplayName}",
-                    body: "The build was successful.",
-                    recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'DevelopersRecipientProvider']]
-                )
-            }
+            echo 'Deployment to production was successful!'
         }
         failure {
-            script {
-                echo 'Pipeline failed.'
-                // Configure email notification
-                emailext (
-                    subject: "FAILURE: ${currentBuild.fullDisplayName}",
-                    body: "The build has failed. Check the logs.",
-                    recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'DevelopersRecipientProvider']]
-                )
-            }
+            echo 'Deployment failed!'
         }
     }
 }
