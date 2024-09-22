@@ -18,20 +18,14 @@ pipeline {
             }
             post {
                 success {
-                    emailext (
-                        to: "aggarwalsanchit2005@gmail.com",
-                        subject: "Success: JUnit and Integration tests successful.",
-                        body: "JUnit and integration tests have passed successfully. The stage is working.",
-                        attachLog: true
-                    )
+                    mail to: "aggarwalsanchit2005@gmail.com",
+                         subject: "Success: JUnit and Integration tests successful.",
+                         body: "JUnit and integration tests have passed successfully. The stage is working."
                 }
                 failure {
-                    emailext (
-                        to: "aggarwalsanchit2005@gmail.com",
-                        subject: "Failure: JUnit and Integration tests failure.",
-                        body: "JUnit and integration tests have failed. The stage is not working. Please review the logs.",
-                        attachLog: true
-                    )
+                    mail to: "aggarwalsanchit2005@gmail.com",
+                         subject: "Failure: JUnit and Integration tests failure.",
+                         body: "JUnit and integration tests have failed. The stage is not working. Please review the logs."
                 }
             }
         }
@@ -50,20 +44,14 @@ pipeline {
             }
             post {
                 success {
-                    emailext (
-                        to: "aggarwalsanchit2005@gmail.com",
-                        subject: "Success: Security scan successful.",
-                        body: "The security scan has completed successfully. The scan is secure.",
-                        attachLog: true
-                    )
+                    mail to: "aggarwalsanchit2005@gmail.com",
+                         subject: "Success: Security scan successful.",
+                         body: "The security scan has completed successfully. The scan is secure."
                 }
                 failure {
-                    emailext (
-                        to: "aggarwalsanchit2005@gmail.com",
-                        subject: "Failure: Security scan failed.",
-                        body: "The security scan has failed. The scan is not secure. Please review and take necessary actions.",
-                        attachLog: true
-                    )
+                    mail to: "aggarwalsanchit2005@gmail.com",
+                         subject: "Failure: Security scan failed.",
+                         body: "The security scan has failed. The scan is not secure. Please review and take necessary actions."
                 }
             }
         }
@@ -105,3 +93,4 @@ pipeline {
         }
     }
 }
+
