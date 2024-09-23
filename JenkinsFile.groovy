@@ -1,24 +1,32 @@
 pipeline {
     agent any
-
     stages {
         stage('Build') {
             steps {
-                // your build steps
+                echo 'Building the project...'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing the project...'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the project...'
             }
         }
     }
-
     post {
-        failure {
-            emailext (
+        always {
+            emailext(
+                subject: "Jenkins Build - ${currentBuild.fullDisplayName}",
+                body: "Build ${currentBuild.fullDisplayName} finished with status: ${currentBuild.currentResult}\n\nCheck console output at: ${env.BUILD_URL}",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']],
                 to: 'aggarwalsanchit2005@gmail.com',
-                subject: "Jenkins Build Failed - ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                body: """The build ${env.BUILD_NUMBER} failed.
-                Check the logs at ${env.BUILD_URL}
-                """,
-                attachLog: true
+                from: 'jenkins@yourdomain.com'
             )
         }
     }
 }
+
