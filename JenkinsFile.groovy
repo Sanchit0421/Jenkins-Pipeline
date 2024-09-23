@@ -36,9 +36,10 @@ pipeline {
                     emailext(
                         subject: "Failure: JUnit and Integration tests failure.",
                         body: "JUnit and integration tests have failed. Please find the attached logs.",
-                        attachments: 'console_output.txt',
-                        to: 'aggarwalsanchit2005@gmail.com'
+                        to: 'aggarwalsanchit2005@gmail.com',
+                        attachLog: false // Set to false if you are attaching a custom log
                     )
+                    archiveArtifacts artifacts: 'console_output.txt', allowEmptyArchive: true
                 }
             }
         }
@@ -68,9 +69,10 @@ pipeline {
                     emailext(
                         subject: "Success: Security scan successful.",
                         body: "The security scan has completed successfully. Please find the attached logs.",
-                        attachments: 'console_output_security.txt',
-                        to: 'aggarwalsanchit2005@gmail.com'
+                        to: 'aggarwalsanchit2005@gmail.com',
+                        attachLog: false // Set to false if you are attaching a custom log
                     )
+                    archiveArtifacts artifacts: 'console_output_security.txt', allowEmptyArchive: true
                 }
                 failure {
                     // Capture console output to a file
@@ -82,9 +84,10 @@ pipeline {
                     emailext(
                         subject: "Failure: Security scan failed.",
                         body: "The security scan has failed. Please find the attached logs.",
-                        attachments: 'console_output_security.txt',
-                        to: 'aggarwalsanchit2005@gmail.com'
+                        to: 'aggarwalsanchit2005@gmail.com',
+                        attachLog: false // Set to false if you are attaching a custom log
                     )
+                    archiveArtifacts artifacts: 'console_output_security.txt', allowEmptyArchive: true
                 }
             }
         }
@@ -129,3 +132,4 @@ pipeline {
         }
     }
 }
+
