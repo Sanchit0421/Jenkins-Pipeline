@@ -11,23 +11,17 @@ pipeline {
 
         stage("Unit Tests") {
             steps {
-                echo 'Running unit tests...'
-                // sh 'mvn test'
-            }
-            post {
-                always {
-                    script {
-                        // Use a workaround to capture logs from the console output
-                        def log = currentBuild.rawBuild.getLog(100) // Gets the last 100 lines of the log
-                        mail to: "aggarwalsanchit2005@gmail.com",
-                             subject: "Unit Tests Results",
-                             body: "Unit tests have been executed.\n\nLogs:\n${log.join('\n')}"
-                    }
+                script {
+                    echo 'Running unit tests...'
+                    // Replace with actual test command and capture output
+                    def result = sh(script: 'mvn test', returnStdout: true)
+                    echo result
+                    mail to: "aggarwalsanchit2005@gmail.com",
+                         subject: "Unit Tests Results",
+                         body: "Unit tests have been executed.\n\nLogs:\n${result}"
                 }
             }
         }
-
-        // Add other stages as needed...
 
         stage("Complete") {
             steps {
@@ -44,6 +38,8 @@ pipeline {
             echo 'Build failed!'
         }
     }
+}
+
 }
 
 
