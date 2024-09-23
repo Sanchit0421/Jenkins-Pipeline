@@ -3,85 +3,62 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "The process by which the code is compiled, built, and packaged in a deployable format. It enters into a process of resolving all dependencies to have the application in a deployable state."
-                echo 'Maven – A popular build automation tool for Java projects that performs project dependency management, the build of your application, and packages the code according to the output format set.'
+                echo "The process by which the code is compiled, built, and packaged in a deployable format."
+                echo 'Maven – A popular build automation tool for Java projects that manages project dependencies and builds the application.'
             }
         }
         stage('Test') {
             steps {
-                echo 'The process of unit tests by which done in isolation from others to verify the functionality of the constituent units or components of software, and ensure that defects are identified and corrected at an early development cycle. JUnit – Open-source framework that acts as a unit testing tool in Java programming.'
-                echo 'The process of integration tests by which done to ensure that different software components actually inter-operate together and check that interfaces work between modules. Katalon Platform – An all-inclusive integration testing tool that is widely used for web, mobile, desktop, and API testing.'
+                echo 'The process of unit tests to verify the functionality of components in isolation. JUnit – An open-source framework for unit testing in Java.'
+                echo 'Integration tests ensure different software components work together. Katalon Platform – A widely used tool for integration testing.'
             }
             post {
                 success {
-                    mail to: 'aggarwalsanchit2005@gmail.com',
-                    subject: "Test Status Email",
-                    body: "Test was successful!",
-                    attachments: '**/test.log'
+                    emailext attachLog: true, body: 'Test was successful!', subject: 'Test Status Email', to: 'aggarwalsanchit2005@gmail.com'
                 }
                 failure {
-                    mail to: 'aggarwalsanchit2005@gmail.com',
-                    subject: "Test Status Email",
-                    body: "Test was failed!",
-                    attachments: '**/test.log'
+                    emailext attachLog: true, body: 'Test failed!', subject: 'Test Status Email', to: 'aggarwalsanchit2005@gmail.com'
                 }
             }
         }
         stage('Code Analysis') {
             steps {
-                echo 'The process by which analyzing the code to ensure it conforms to industry norms related to quality, maintainability, and efficiency. It helps to identify potential quality issues and security risks.'
-                echo 'SonarQube – An open-source platform that continuously inspects the quality of code, providing detail in duplications, complexity, potential bugs, and other code quality metrics. It supports more than 30 programming languages and has many plugins available for augmenting functionality.'
+                echo 'Analyzing code to ensure it meets quality standards. SonarQube – An open-source platform for continuous code quality inspection.'
             }
         }
         stage('Security Scan') {
             steps {
-                echo 'The process by which using for security testing to ensure there are no vulnerabilities and no possible risks in a software application that could be exploited by malicious attackers. Generally, it includes Vulnerability Scanning, Penetration Testing, Risk Assessment, Security Auditing, and Authentication and Authorization Testing.'
-                echo 'OpenVAS – The well-known open-source tool detects, assesses, and reports on various security vulnerabilities.'
+                echo 'Conducting security testing to identify vulnerabilities. OpenVAS – A popular open-source tool for vulnerability detection.'
             }
             post {
                 success {
-                    mail to: 'aggarwalsanchit2005@gmail.com',
-                    subject: "Security Scan Status Email",
-                    body: "Security Scan was successful!",
-                    attachments: '**/security_scan.log'
+                    emailext attachLog: true, body: 'Security Scan was successful!', subject: 'Security Scan Status Email', to: 'aggarwalsanchit2005@gmail.com'
                 }
                 failure {
-                    mail to: 'aggarwalsanchit2005@gmail.com',
-                    subject: "Security Scan Status Email",
-                    body: "Security Scan was failed!",
-                    attachments: '**/security_scan.log'
+                    emailext attachLog: true, body: 'Security Scan failed!', subject: 'Security Scan Status Email', to: 'aggarwalsanchit2005@gmail.com'
                 }
             }
         }
         stage('Deploy to Staging') {
             steps {
-                echo 'The process by which deploying the application to a staging environment as close as possible to the production environment, allowing testing of the application in conditions as close as possible to those in production before a final deployment.'
-                echo 'AWS EC2 (Amazon Web Services Elastic Compute Cloud) – Offers scalable virtual servers in the cloud, giving the developer a flexible and reliable environment to simulate production-like conditions for testing purposes.'
+                echo 'Deploying the application to a staging environment for testing.'
             }
         }
         stage('Integration Tests on Staging') {
             steps {
-                echo "The process by which running integration testing on staging to ensure that the application is working with expected results under near-production conditions. This is the stage that will point out issues that may not be visible within the development environment."
-                echo 'Selenium – It is one of the most popular open-source tools used for web application testing. Testing can be automated on different browsers and operating systems.'
+                echo "Running integration tests in the staging environment."
             }
         }
         stage('Deploy to Production') {
             steps {
-                echo "The process by which the application is deployed to the production environment and is accessible to its end-users. This phase is actually the transition of the application from the test environment to a live environment, which can be accessed by the public."
-                echo 'Docker – An open-source platform for developers to build, package, deploy, and execute applications in isolated containers. It simplifies the development and deployment of distributed applications while maintaining consistency and scalability across varied environments.'
+                echo "Deploying the application to the production environment."
             }
             post {
                 success {
-                    mail to: 'aggarwalsanchit2005@gmail.com',
-                    subject: "Deploy to Production Status Email",
-                    body: "Deploy to Production was successful!",
-                    attachments: '**/deploy_to_production.log'
+                    emailext attachLog: true, body: 'Deployment to Production was successful!', subject: 'Deploy to Production Status Email', to: 'aggarwalsanchit2005@gmail.com'
                 }
                 failure {
-                    mail to: 'aggarwalsanchit2005@gmail.com',
-                    subject: "Deploy to Production Status Email",
-                    body: "Deploy to Production was failed!",
-                    attachments: '**/deploy_to_production.log'
+                    emailext attachLog: true, body: 'Deployment to Production failed!', subject: 'Deploy to Production Status Email', to: 'aggarwalsanchit2005@gmail.com'
                 }
             }
         }
