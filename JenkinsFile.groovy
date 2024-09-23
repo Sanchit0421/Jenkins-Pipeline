@@ -50,9 +50,20 @@ pipeline {
             }
             post {
                 success {
-                    mail to: "aggarwalsanchit2005@gmail.com",
+                    emailext(
+                        
                          subject: "Success: Security scan successful.",
-                         body: "The security scan has completed successfully."
+                         body: '''<html>
+                                     <body>
+                         <p>Build Status: ${BUILD_STATUS}</p>
+                    <p>Check the <a href="${BUILD_URL}">console output</a?.</p>)
+                        </body>
+                        <html>''',
+                        to: 'aggarwalsanchit2005@gmail.com',
+                        from 'jenkins@example.com',
+                        replyTo: 'jenkins@example.com',
+                        mimeType: 'text/html'
+                        )
                 }
                 failure {
                     mail to: "aggarwalsanchit2005@gmail.com",
