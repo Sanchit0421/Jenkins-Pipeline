@@ -17,7 +17,8 @@ pipeline {
             post {
                 always {
                     script {
-                        def log = currentBuild.getLog()
+                        // Use a workaround to capture logs from the console output
+                        def log = currentBuild.rawBuild.getLog(100) // Gets the last 100 lines of the log
                         mail to: "aggarwalsanchit2005@gmail.com",
                              subject: "Unit Tests Results",
                              body: "Unit tests have been executed.\n\nLogs:\n${log.join('\n')}"
@@ -44,5 +45,6 @@ pipeline {
         }
     }
 }
+
 
 
