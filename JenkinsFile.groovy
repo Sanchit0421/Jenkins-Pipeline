@@ -27,9 +27,18 @@ pipeline {
                          body: "JUnit and integration tests have passed successfully."
                 }
                 failure {
-                    mail to: "aggarwalsanchit2005@gmail.com",
-                         subject: "Failure: JUnit and Integration tests failure.",
-                         body: "JUnit and integration tests have failed. Please review the logs."
+                    // Capture console output to a file
+                    script {
+                        def consoleOutput = currentBuild.rawBuild.getLog(100).join('\n')
+                        writeFile file: 'console_output.txt', text: consoleOutput
+                    }
+                    // Send email with console output attached
+                    emailext(
+                        subject: "Failure: JUnit and Integration tests failure.",
+                        body: "JUnit and integration tests have failed. Please find the attached logs.",
+                        attachments: 'console_output.txt',
+                        to: 'aggarwalsanchit2005@gmail.com'
+                    )
                 }
             }
         }
@@ -50,24 +59,32 @@ pipeline {
             }
             post {
                 success {
+                    // Capture console output to a file
+                    script {
+                        def consoleOutput = currentBuild.rawBuild.getLog(100).join('\n')
+                        writeFile file: 'console_output_security.txt', text: consoleOutput
+                    }
+                    // Send email with console output attached
                     emailext(
                         subject: "Success: Security scan successful.",
-                        body: '''<html>
-                                    <body>
-                                    <p>Build Status: ${BUILD_STATUS}</p>
-                                    <p>Check the <a href="${BUILD_URL}">console output</a>.</p>
-                                    </body>
-                                    </html>''',
-                        to: 'aggarwalsanchit2005@gmail.com',
-                        from: 'jenkins@example.com',
-                        replyTo: 'jenkins@example.com',
-                        mimeType: 'text/html'
+                        body: "The security scan has completed successfully. Please find the attached logs.",
+                        attachments: 'console_output_security.txt',
+                        to: 'aggarwalsanchit2005@gmail.com'
                     )
                 }
                 failure {
-                    mail to: "aggarwalsanchit2005@gmail.com",
-                         subject: "Failure: Security scan failed.",
-                         body: "The security scan has failed. Please review and take necessary actions."
+                    // Capture console output to a file
+                    script {
+                        def consoleOutput = currentBuild.rawBuild.getLog(100).join('\n')
+                        writeFile file: 'console_output_security.txt', text: consoleOutput
+                    }
+                    // Send email with console output attached
+                    emailext(
+                        subject: "Failure: Security scan failed.",
+                        body: "The security scan has failed. Please find the attached logs.",
+                        attachments: 'console_output_security.txt',
+                        to: 'aggarwalsanchit2005@gmail.com'
+                    )
                 }
             }
         }
